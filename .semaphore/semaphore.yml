@@ -1,0 +1,31 @@
+version: v1.0
+name: Tests and checks
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+  containers:
+    - name: main
+      image: 'semaphoreci/node:14'
+global_job_config:
+  prologue:
+    commands:
+      - apt-get update
+      - apt-get -y install curl gnupg
+      - checkout
+blocks:
+  - name: Install dependencies
+    task:
+      jobs:
+        - name: Install deps & compile
+          commands:
+            - checkout
+promotions:
+  - name: Build and push
+    pipeline_file: build-and-push.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - main
+          - develop
+          - release

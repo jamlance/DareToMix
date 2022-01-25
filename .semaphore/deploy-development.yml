@@ -1,0 +1,25 @@
+version: v1.0
+name: Deploy to development
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Deploy to workspace
+    task:
+      env_vars:
+        - name: APP_NAME
+          value: dtm-web
+        - name: HOST
+          value: 64.227.25.232
+        - name: PORT
+          value: '3000'
+      secrets:
+        - name: semaphore-rsa
+      jobs:
+        - name: run deploy
+          commands:
+            - chmod 0600 ~/.keys/*
+            - ssh-add ~/.keys/*
+            - ssh-keyscan -H -p 22 ${HOST} >> ~/.ssh/known_hosts
+            - ssh root@${HOST} -i ~/.keys/id_rsa "/opt/scripts/ci/run_docker.dev.backend ${APP_NAME} ${PORT}"

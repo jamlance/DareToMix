@@ -1,0 +1,33 @@
+version: v1.0
+name: Build and push
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Build and push Image
+    task:
+      env_vars:
+        - name: GCLOUD_REGISTRY
+          value: gcr.io/fleeksite
+        - name: APP_NAME
+          value: dtm-web
+      secrets:
+        - name: gregistry
+      prologue:
+        commands:
+          - checkout
+          - docker login -u _json_key --password-stdin https://gcr.io < ~/.secrets/gcloud.json
+      jobs:
+        - name: Docker build
+          commands:
+            - 'docker build -t "${GCLOUD_REGISTRY}/${APP_NAME}:${SEMAPHORE_GIT_SHA:0:7}" -t "${GCLOUD_REGISTRY}/${APP_NAME}:latest" .'
+            - 'docker push "${GCLOUD_REGISTRY}/${APP_NAME}:${SEMAPHORE_GIT_SHA:0:7}"'
+            - 'docker push "${GCLOUD_REGISTRY}/${APP_NAME}:latest"'
+promotions:
+  - name: Deploy to development
+    pipeline_file: deploy-development.yml
+  - name: Deploy to production
+    pipeline_file: deploy-production.yml
+    auto_promote:
+      when: result = 'passed' and branch = 'main'
