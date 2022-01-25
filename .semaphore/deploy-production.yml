@@ -11,9 +11,9 @@ blocks:
         - name: APP_NAME
           value: dtm-web
         - name: HOST
-          value: 64.227.25.232
+          value: 159.203.91.111
         - name: PORT
-          value: '3000'
+          value: '3005'
       secrets:
         - name: semaphore-rsa
       jobs:
