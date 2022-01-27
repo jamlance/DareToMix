@@ -20,4 +20,4 @@ RUN yarn build
 RUN yarn global add serve
 
 # start app
-CMD ["serve", "-s", "build", "--port", "3005"]
+CMD ["serve", "-s", "build",  "-l", "4000"]
