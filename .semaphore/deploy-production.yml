@@ -11,7 +11,7 @@ blocks:
         - name: APP_NAME
           value: dtm-web
         - name: HOST
-          value: 159.203.91.111
+          value: 64.227.25.232
         - name: PORT
           value: '3005'
       secrets:
