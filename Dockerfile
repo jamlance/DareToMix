@@ -15,7 +15,10 @@ RUN yarn
 # add app
 COPY . ./
 
-RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf 
+# build
+RUN yarn build
+RUN yarn global add serve
 
 # start app
-CMD ["npm", "start"]
+CMD ["serve", "-s", "build"]
+
